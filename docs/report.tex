@@ -50,7 +50,7 @@
 }
 
 \author{\Large Matthieu Basset --- 2225981}
-\date{\huge Janvier 2024}
+\date{\huge Février 2024}
 \begin{document}
 
 \thispagestyle{empty}
@@ -67,9 +67,15 @@
 
 
 \newpage
-
 \section{Question 1}
+% TODO: Relire copilot
+La transformée KL cherche à réduire la dimentionalité des données en les projetant dans un espace où les composantes sont décorrélées. Pour ce faire, on cherche les vecteurs propres de la matrice de covariance des données.
+Ces vecteurs propres sont les axes de l'espace dans lequel on projette les données.
+On peut alors choisir de ne conserver que les composantes les plus importantes, c'est-à-dire celles qui ont les plus grandes valeurs propres.
 
+La transformée DCT par opposition, cherche à réduire la redondance spatiale des données. Elle est basée sur la décomposition en série de Fourier discrète.
+
+La transformée en ondelettes est une autre méthode de compression qui cherche à réduire la redondance spatiale des données. Elle est basée sur la décomposition en ondelettes de l'image.
 
 \newpage
 \section{Question 2}
@@ -82,6 +88,9 @@
 
 \newpage
 \section{Question 3}
+Observation: Les 4 premières images ont une bordure grise autour
+
+Normalement la transformée KL permet de s'affranchir en partie des changements d'espace de couleurs (si ces derniers sont linéaires), mais YUV pourrait déjà faciliter le travail (?).
 
 \newpage
 \section{Question 4}
@@ -89,6 +98,9 @@
 \begin{array}{|l|c|} \hline % chktex 44
 Tableau & oui\\ \hline % chktex 44
 \end{array}\]
+
+\newpage
+\section{Question 5}
 
 % Deux images:
 
