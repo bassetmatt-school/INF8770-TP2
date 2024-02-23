@@ -68,84 +68,59 @@
 
 \newpage
 \section{Question 1}
-% TODO: Relire copilot
-La transformée KL cherche à réduire la dimentionalité des données en les projetant dans un espace où les composantes sont décorrélées. Pour ce faire, on cherche les vecteurs propres de la matrice de covariance des données.
-Ces vecteurs propres sont les axes de l'espace dans lequel on projette les données.
-On peut alors choisir de ne conserver que les composantes les plus importantes, c'est-à-dire celles qui ont les plus grandes valeurs propres.
+La transformée KL vise à passer une image dans la base des vecteurs propres de la matrice de covariance associée à la valeur de ses pixels après que ces derniers aient été centrés. En d'autres termes, cette opération permet de transformer les données afin de travailler sur les composantes contribuant le plus à la variance de l'image. Cette représentation est très utile, en effet travailler dans cet espace permet de plus facilement réduire la quantité de détails liée à des données apporant moins d'informations à l'image d'origine.
 
-La transformée DCT par opposition, cherche à réduire la redondance spatiale des données. Elle est basée sur la décomposition en série de Fourier discrète.
+Pour effectuer cette transformation, on commence par centrer les données en leur soustrayant leur moyenne, cela permet d'éviter les biais lors de la recherche de vecteurs propres. On calcule ensuite la matrice de covariance de la liste de vecteurs obtenue. On peut ensuite obtenir ses vecteurs propres, ce qui permet de passer les données dans l'espace lié à ces vecteurs. On peut effectuer différentes opérations sur les données tant qu'elle sont dans cet espace. On peut ensuite retrouver l'espace de base en calulant la matrice pseudo inverse liée à la matrice de vecteurs propres et ajouter la moyenne soustraite auparavant. On retrouve ainsi l'image dans un espace similaire à celui d'origine.
 
-La transformée en ondelettes est une autre méthode de compression qui cherche à réduire la redondance spatiale des données. Elle est basée sur la décomposition en ondelettes de l'image.
+Cette transformée se distingue des transformées DCT et en ondelettes par les éléments sur lesquels elle opère. Ces deux dernières décomposent le signal en somme de signaux periodiques, là où la transformée KL cherche les axes de plus grande variance dans l'image
 
 \newpage
 \section{Question 2}
 
+L'implémentation du TP est réalisée en python via un notebook. On trouve les résultats suivants pour la compression, utilisant des niveaux $8/8/8$, $8/8/4$, $8/8/0$ et $8/6/4$, et en utilisant l'espace colorimétrique RGB ou YUV:\@
 
-\begin{itemize}[label={--}]
-	\item Liste label tirets
-\end{itemize}
-
-
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.35]{all.pdf}
+    \caption{Résultats pour chaque image}
+\end{figure}
 \newpage
 \section{Question 3}
-Observation: Les 4 premières images ont une bordure grise autour
+Lorsque l'on s'intéresse à la métrique de qualité couplé au taux de compression, ce sont les quantifications $8/8/0$ qui offrent le compromis le plus satisfaisant. Certes la qualité de l'image est dégradée de manière visible, mais la compression offerte compense cette perte. On notera que par opposition aux autres méthodes, une quantification aggressive sur une image dans l'espace de la transformée KL donnera des artefacts plus violents visuellement.
 
-Normalement la transformée KL permet de s'affranchir en partie des changements d'espace de couleurs (si ces derniers sont linéaires), mais YUV pourrait déjà faciliter le travail (?).
+Pour ce qui est de l'espace de couleur le plus approprié, pour la métrique PSNR, l'espace YUV offre de meilleurs résultats, pour la métrique SSIM, les résultats sont plus proches. Ces métriques étant basées sur la perception humaine, il est naturel que l'espace YUV donne de meilleurs résultats. En effet cet espace est également conçu de manière à discriminer les composantes de couleur pour la compression adaptée à l'œil humain.
+
+Ainsi, on peut conclure que la combinaison maximisant le rapport qualité/compression est une quantifiaction $8/8/0$ utisée sur une image YUV.\@
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.45]{averages.pdf}
+    \caption{Résultats moyens qualité/compression pour chaque paramètre}
+\end{figure}
 
 \newpage
 \section{Question 4}
-\[
-\begin{array}{|l|c|} \hline % chktex 44
-Tableau & oui\\ \hline % chktex 44
-\end{array}\]
+D'un point de vue implémentation, il suffit de découper l'algorithme précédent et de remplacer les matrices de vecteurs propre par celles d'autres images.
+
+On obtient les résultats suivants pour la compression d'une image $i$ en abscisse dans la base d'une image $j$ en ordonée.
+
+Le taux de compression est de $33.3\%$ pour chaque image car les niveaux de quantification $8/8/0$ avaient été retenus à la question précédente.
+
+\begin{figure}[h]
+    \begin{minipage}[c]{.49\linewidth}
+        \centering
+        \includegraphics[scale = 0.25]{psnr.pdf}
+    \end{minipage}
+    \begin{minipage}[c]{.49\linewidth}
+        \centering
+        \includegraphics[scale = 0.25]{ssim.pdf}
+    \end{minipage}
+    \caption{Valeurs de PSNR et SSIM pour les images qunaitifiées dans d'autres bases.}
+\end{figure}
 
 \newpage
 \section{Question 5}
+On peut remarquer sans surprise que les résultats de qualité sont inférieurs sur les chaque image n'utilisant pas sa décomposition comme base pour la transformation. C'est d'ailleurs là une illustration d'un problème de la transformée KL, elle nécessite de calculer la base de vecteurs propre pour chaque image. Par opposition à DCT qui utilise une base standard de cosinus, on LZ77 que l'on peut uitiliser sur des dictionnaires pré-construits.
 
-% Deux images:
-
-% \begin{figure}[h]
-% 	\begin{minipage}[c]{.49\linewidth}
-% 		 \centering
-% 		 \includegraphics[scale = 0.25]{poly-logo.pdf}
-% 	\end{minipage}
-% 	\begin{minipage}[c]{.49\linewidth}
-% 		 \centering
-% 		 \includegraphics[scale = 0.25]{poly-logo.pdf}
-% 	\end{minipage}
-% 		 \caption{ \centering Deux fois le logo de Poly, ouais.}
-% \end{figure}
-
-% Une magnifique liste à tirets:
-% \begin{itemize}[label={--}]
-% 	\item Un
-% 	\item Deux
-% 	\item Trois
-% \end{itemize}
-% Une autre liste, cette fois avec des chiffres
-% \begin{enumerate}[label={E\arabic*.}]
-% 	\item item
-% 	\item item
-% 	\item item
-% \end{enumerate}
-
-% Une liste qui suit les numéros (wow)
-
-% \begin{enumerate}[label={E\arabic*.}, resume]
-% 	\item item
-% 	\item item
-% \end{enumerate}
-
-% \newpage
-% \section*{ANNEXES}
-
-% \setcounter{section}{0}
-% \renewcommand{\thesection}{\Alph{section}}
-% \section{Première section d'annexe}
-% Des trucs, des refs??
-
-% \newpage
-% \section{Formules utilisées}\label{sec:truc}
-% \subsection{Autre annexe}
-% Texte
+On remarquera cependant que certaines combinaisons donnent des résultats plutôt satisfaisant, les images 1 et 4 utilisées comme base donnent des résultats aceptables pour les mesures de SSIM (excepté pour l'image 2 qui donne des résultats médiocres pour chaque autre base utilisée, sûrement dû à sa structure particulière très unie).
 \end{document}
